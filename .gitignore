@@ -1,0 +1,35 @@
+# Environment & Secrets
+.env
+.env.local
+*.env
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Vector storage cache
+storage/*.json
+
+# Logs & Temporary files
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
