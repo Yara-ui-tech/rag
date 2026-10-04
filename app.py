@@ -108,8 +108,22 @@ def healthcheck():
 # Web UI Page Route
 # ----------------------------------------------------------------------
 @app.route("/")
+@app.route("/api")
+@app.route("/api/")
+@app.route("/api/index")
+@app.route("/api/index.py")
 def index():
     return render_template("index.html")
+
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    return send_from_directory(STATIC_DIR, filename)
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return "", 204
 
 
 # ----------------------------------------------------------------------
