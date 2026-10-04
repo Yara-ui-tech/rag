@@ -24,17 +24,39 @@ from src.task_solver import TaskSolver
 
 load_dotenv()
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
-
-# Paths
+# Base Directories
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
-STORAGE_DIR = os.path.join(BASE_DIR, "storage")
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
+# Initialize Flask with explicit absolute paths
+app = Flask(
+    __name__,
+    static_folder=STATIC_DIR,
+    static_url_path="/static",
+    template_folder=TEMPLATES_DIR
+)
+
+# Detect Serverless (e.g. Vercel, AWS Lambda) where root filesystem is read-only
+IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+if IS_SERVERLESS:
+    STORAGE_DIR = "/tmp/storage"
+else:
+    STORAGE_DIR = os.path.join(BASE_DIR, "storage")
+
 INDEX_PATH = os.path.join(STORAGE_DIR, "rag_index.json")
 ENV_PATH = os.path.join(BASE_DIR, ".env")
 
-os.makedirs(DATA_DIR, exist_ok=True)
-os.makedirs(STORAGE_DIR, exist_ok=True)
+try:
+    os.makedirs(STORAGE_DIR, exist_ok=True)
+except OSError:
+    pass
+
+try:
+    os.makedirs(DATA_DIR, exist_ok=True)
+except OSError:
+    pass
 
 # Global Pipeline Instance
 pipeline = None

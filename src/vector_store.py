@@ -102,17 +102,20 @@ class VectorStore:
 
     def save(self, filepath: str) -> None:
         """Persists the vector index and chunks to disk as JSON."""
-        dir_name = os.path.dirname(os.path.abspath(filepath))
-        os.makedirs(dir_name, exist_ok=True)
+        try:
+            dir_name = os.path.dirname(os.path.abspath(filepath))
+            os.makedirs(dir_name, exist_ok=True)
 
-        payload = {
-            "version": "1.0",
-            "count": len(self.chunks),
-            "chunks": [c.to_dict() for c in self.chunks],
-        }
+            payload = {
+                "version": "1.0",
+                "count": len(self.chunks),
+                "chunks": [c.to_dict() for c in self.chunks],
+            }
 
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(payload, f, indent=2)
+            with open(filepath, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2)
+        except OSError as e:
+            print(f"[!] Warning: Could not persist VectorStore to disk ({e}). Operating in memory.")
 
     @classmethod
     def load(cls, filepath: str) -> "VectorStore":
